@@ -4,7 +4,7 @@ import { NotFound } from './shared/not-found/not-found';
 export const routes: Routes = [
     {
         path: '',
-        loadChildren: () => import('./PlatformCategory/dashboard/dashboard.routes').then(m => m.DASHBOARD_ROUTES)
+        loadChildren: () => import('./PlatformCategory/platformCategory.routes').then(m => m.PLATFORM_ROUTES)
     },
 
     {

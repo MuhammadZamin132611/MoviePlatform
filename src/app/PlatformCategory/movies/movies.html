@@ -1,0 +1,244 @@
+<div class="min-h-screen bg-[#0f1014] text-white pl-20 pb-16">
+
+    <app-side-menu></app-side-menu>
+    <!-- Hero Featured Movie Banner -->
+    @if (featuredMovie(); as hero) {
+    <section class="relative w-full h-[65vh] min-h-120 flex items-end overflow-hidden">
+        <!-- Backdrop Image -->
+        <img [src]="hero.backdrop" [alt]="hero.title"
+            class="absolute inset-0 w-full h-full object-cover object-center" />
+
+        <!-- Edge Vignettes -->
+        <div class="absolute inset-0 bg-gradient-to-r from-[#0f1014] via-[#0f1014]/75 to-transparent"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-[#0f1014] via-[#0f1014]/35 to-transparent"></div>
+
+        <!-- Hero Content -->
+        <div class="relative z-10 max-w-2xl px-6 md:px-10 pb-10">
+            <div class="flex flex-wrap items-center gap-2.5 mb-3">
+                <span
+                    class="px-2.5 py-0.5 rounded bg-blue-500/20 border border-blue-400/30 text-blue-300 text-xs font-semibold">
+                    {{ hero.studio }}
+                </span>
+                <span
+                    class="px-2 py-0.5 rounded bg-amber-500/20 border border-amber-400/30 text-amber-300 text-xs font-semibold">
+                    {{ hero.qualityBadge }}
+                </span>
+            </div>
+
+            <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight">
+                {{ hero.title }}
+            </h1>
+
+            <div class="flex flex-wrap items-center gap-2 text-xs md:text-sm text-gray-300 mt-3 font-medium">
+                <span>{{ hero.year }}</span>
+                <span>•</span>
+                <span>{{ hero.duration }}</span>
+                <span>•</span>
+                <span>{{ hero.genre }}</span>
+                <span>•</span>
+                <span class="px-1.5 py-0.5 rounded bg-white/15 text-xs">{{ hero.rating }}</span>
+            </div>
+
+            <p class="text-xs text-gray-400 mt-1.5">
+                Available in: <span class="text-gray-200">{{ hero.language }}</span>
+            </p>
+
+            <p class="text-sm md:text-base text-gray-300 mt-3 line-clamp-2 max-w-xl">
+                {{ hero.description }}
+            </p>
+
+            <!-- Primary CTAs -->
+            <div class="flex items-center gap-3 mt-6">
+                <a [routerLink]="['/watch', hero.id]"
+                    class="px-7 py-3 rounded-xl bg-white hover:bg-gray-200 text-[#0f1014] font-bold text-sm flex items-center gap-2 transition-all shadow-lg cursor-pointer">
+                    <mat-icon>play_arrow</mat-icon>
+                    <span>Watch Movie</span>
+                </a>
+
+                <button type="button" (click)="toggleWatchlist(hero.id, $event)"
+                    class="p-3 rounded-xl bg-white/15 hover:bg-white/25 backdrop-blur-md border border-white/15 text-white flex items-center justify-center transition-all cursor-pointer"
+                    [title]="isInWatchlist(hero.id) ? 'Remove from Watchlist' : 'Add to Watchlist'">
+                    <mat-icon>{{ isInWatchlist(hero.id) ? 'check' : 'add' }}</mat-icon>
+                </button>
+            </div>
+        </div>
+    </section>
+    }
+
+    <div class="px-6 md:px-10 space-y-10 -mt-2 relative z-20">
+
+        <!-- Studio / Universe Hub Tiles -->
+        <section>
+            <h2 class="text-lg font-bold tracking-tight mb-3.5">Explore by Studio</h2>
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+                @for (st of studios; track st.name) {
+                <button type="button" (click)="selectedStudio.set(st.name)" [class]="
+              selectedStudio() === st.name
+                ? 'bg-gradient-to-br from-blue-600/35 to-indigo-600/20 border-blue-400/70 text-white shadow-lg'
+                : 'bg-[#16181f] hover:bg-white/10 border-white/10 text-gray-300'
+            " class="p-4 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between h-20">
+                    <span class="font-extrabold text-sm md:text-base tracking-wide">{{ st.name }}</span>
+                    <span class="text-[11px] text-gray-400 line-clamp-1">{{ st.subtitle }}</span>
+                </button>
+                }
+            </div>
+        </section>
+
+        <!-- Top Blockbusters Ranked Strip (Visible when unfiltered) -->
+        @if (selectedStudio() === 'All' && selectedLanguage() === 'All' && selectedGenre() === 'All') {
+        <section>
+            <div class="flex items-center justify-between mb-3.5">
+                <h2 class="text-lg font-bold tracking-tight">Top Blockbusters Today</h2>
+                <span class="text-xs text-blue-400 font-medium">4K & IMAX Enhanced</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                @for (movie of topBlockbusters(); track movie.id; let idx = $index) {
+                <a [routerLink]="['/watch', movie.id]"
+                    class="group relative flex items-center gap-3.5 p-3 rounded-xl bg-[#16181f] hover:bg-white/10 border border-white/5 transition-all overflow-hidden">
+                    <span
+                        class="text-4xl font-black text-white/15 group-hover:text-amber-400/50 transition-colors select-none w-7 text-center shrink-0">
+                        {{ idx + 1 }}
+                    </span>
+
+                    <div class="w-14 h-20 rounded-lg overflow-hidden shrink-0">
+                        <img [src]="movie.poster" [alt]="movie.title"
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                    </div>
+
+                    <div class="min-w-0 flex-1">
+                        <span class="text-[10px] font-semibold text-amber-400 uppercase tracking-wider">
+                            {{ movie.studio }}
+                        </span>
+                        <h3 class="text-sm font-bold text-white truncate mt-0.5">{{ movie.title }}</h3>
+                        <p class="text-[11px] text-gray-400 mt-1">
+                            {{ movie.year }} • {{ movie.duration }}
+                        </p>
+                    </div>
+                </a>
+                }
+            </div>
+        </section>
+        }
+
+        <!-- Language & Genre Filters + Movie Grid -->
+        <section>
+            <div class="space-y-3 mb-6">
+                <!-- Language Filter Row -->
+                <div class="flex items-center gap-2 overflow-x-auto pb-1">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-gray-400 mr-1 shrink-0">
+                        Language:
+                    </span>
+                    @for (lang of languages; track lang) {
+                    <button type="button" (click)="selectedLanguage.set(lang)" [class]="
+                selectedLanguage() === lang
+                  ? 'bg-amber-400 text-[#0f1014] font-bold'
+                  : 'bg-[#16181f] text-gray-300 hover:bg-white/10 border border-white/10'
+              " class="px-3.5 py-1.5 rounded-lg text-xs whitespace-nowrap transition-all cursor-pointer">
+                        {{ lang }}
+                    </button>
+                    }
+                </div>
+
+                <!-- Genre Filter Row + Count -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div class="flex items-center gap-2 overflow-x-auto pb-1">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-gray-400 mr-1 shrink-0">
+                            Genre:
+                        </span>
+                        @for (genre of genres; track genre) {
+                        <button type="button" (click)="selectedGenre.set(genre)" [class]="
+                  selectedGenre() === genre
+                    ? 'bg-white text-[#0f1014] font-semibold'
+                    : 'bg-[#16181f] text-gray-300 hover:bg-white/10 border border-white/10'
+                " class="px-3.5 py-1.5 rounded-full text-xs whitespace-nowrap transition-all cursor-pointer">
+                            {{ genre }}
+                        </button>
+                        }
+                    </div>
+
+                    <span class="text-xs text-gray-400 shrink-0">
+                        {{ filteredMovies().length }} {{ filteredMovies().length === 1 ? 'movie' : 'movies' }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Movie Poster Grid -->
+            @if (filteredMovies().length > 0) {
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-5">
+                @for (movie of filteredMovies(); track movie.id) {
+                <a [routerLink]="['/watch', movie.id]"
+                    class="group relative rounded-xl overflow-hidden bg-[#16181f] aspect-[2/3] border border-white/5 transition-all duration-300 hover:scale-105 hover:z-10 hover:shadow-2xl hover:shadow-black/80">
+
+                    <img [src]="movie.poster" [alt]="movie.title" loading="lazy"
+                        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+
+                    <!-- Quality / Studio Pill -->
+                    <div class="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between gap-1">
+                        <span
+                            class="px-2 py-0.5 text-[10px] font-semibold bg-black/70 backdrop-blur-md text-gray-100 rounded border border-white/10">
+                            {{ movie.studio }}
+                        </span>
+                        @if (movie.qualityBadge !== 'Full HD') {
+                        <span class="px-1.5 py-0.5 text-[9px] font-bold bg-amber-500/90 text-[#0f1014] rounded">
+                            4K
+                        </span>
+                        }
+                    </div>
+
+                    <!-- Hover Overlay -->
+                    <div
+                        class="absolute inset-0 bg-gradient-to-t from-[#0f1014] via-[#0f1014]/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3.5">
+                        <h3 class="font-bold text-sm text-white line-clamp-1">
+                            {{ movie.title }}
+                        </h3>
+
+                        <div class="flex items-center gap-1.5 text-[11px] text-gray-300 mt-1">
+                            <span>{{ movie.year }}</span>
+                            <span>•</span>
+                            <span>{{ movie.duration }}</span>
+                            <span>•</span>
+                            <span class="px-1 bg-white/15 rounded text-[10px]">{{ movie.rating }}</span>
+                        </div>
+
+                        <p class="text-[11px] text-gray-400 mt-1 line-clamp-2">
+                            {{ movie.description }}
+                        </p>
+
+                        <div class="mt-3 flex items-center gap-2">
+                            <span
+                                class="flex-1 bg-white text-[#0f1014] font-semibold text-xs py-2 rounded-lg flex items-center justify-center gap-1 hover:bg-gray-200 transition-colors">
+                                <mat-icon class="!text-base !w-4 !h-4">play_arrow</mat-icon>
+                                Watch Now
+                            </span>
+                            <button type="button" (click)="toggleWatchlist(movie.id, $event)"
+                                class="p-2 rounded-lg bg-white/15 hover:bg-white/25 text-white flex items-center justify-center transition-colors"
+                                title="Toggle Watchlist">
+                                <mat-icon class="!text-base !w-4 !h-4">
+                                    {{ isInWatchlist(movie.id) ? 'check' : 'add' }}
+                                </mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                </a>
+                }
+            </div>
+            } @else {
+            <!-- Empty State -->
+            <div
+                class="flex flex-col items-center justify-center py-20 text-center bg-[#16181f]/50 rounded-2xl border border-white/5">
+                <mat-icon class="!text-4xl !w-10 !h-10 text-gray-500 mb-3">movie_filter</mat-icon>
+                <h3 class="text-base font-semibold text-white">No movies match your filters</h3>
+                <p class="text-xs text-gray-400 mt-1">
+                    Try choosing a different studio, language, or genre combination.
+                </p>
+                <button type="button" (click)="resetFilters()"
+                    class="mt-4 px-5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-semibold text-white transition-colors cursor-pointer">
+                    Reset All Filters
+                </button>
+            </div>
+            }
+        </section>
+
+    </div>
+</div>
