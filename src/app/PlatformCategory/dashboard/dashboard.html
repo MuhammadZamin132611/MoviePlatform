@@ -1,0 +1,151 @@
+<div class="min-h-screen bg-[#0f1014] text-white flex overflow-x-hidden font-sans">
+    <app-side-menu></app-side-menu>
+    <!-- Main Content Area -->
+    <main class="flex-1 pl-20 w-full">
+
+        <!-- Hero Banner Section -->
+        <section class="relative w-full h-[72vh] min-h-[480px] flex items-end">
+            <!-- Backdrop Image -->
+            <img [src]="featuredHero.backdrop" [alt]="featuredHero.title"
+                class="absolute inset-0 w-full h-full object-cover object-center" />
+
+            <!-- Hotstar Signature Vignette Gradients -->
+            <div class="absolute inset-0 bg-gradient-to-t from-[#0f1014] via-[#0f1014]/40 to-transparent"></div>
+            <div class="absolute inset-0 bg-gradient-to-r from-[#0f1014] via-[#0f1014]/60 to-transparent"></div>
+
+            <!-- Hero Content Overlay -->
+            <div class="relative z-10 max-w-2xl px-8 md:px-12 pb-14 space-y-4">
+                <span
+                    class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold tracking-wider bg-red-600/90 text-white uppercase">
+                    <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
+                    {{ featuredHero.badge }}
+                </span>
+
+                <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight">
+                    {{ featuredHero.title }}
+                </h1>
+
+                <p class="text-sm font-medium text-blue-300">
+                    {{ featuredHero.meta }}
+                </p>
+
+                <p class="text-gray-300 text-sm md:text-base line-clamp-3 leading-relaxed">
+                    {{ featuredHero.description }}
+                </p>
+
+                <!-- Action Buttons (Angular Material) -->
+                <div class="pt-3 flex items-center gap-4">
+                    <button mat-flat-button
+                        class="!bg-white !text-black hover:!bg-gray-200 !font-bold !px-8 !py-6 !rounded-xl !text-base transition-transform hover:scale-105">
+                        <mat-icon class="mr-1">play_arrow</mat-icon>
+                        Watch Now
+                    </button>
+
+                    <button mat-stroked-button matTooltip="Add to Watchlist"
+                        class="!border-white/30 !text-white !bg-white/10 hover:!bg-white/20 !min-w-[52px] !h-[52px] !rounded-xl">
+                        <mat-icon class="!m-0">add</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Content Rows Container -->
+        <div class="px-8 md:px-12 pb-16 space-y-10 -mt-4 relative z-20">
+
+            <!-- Category Filter Chips (Angular Material) -->
+            <div class="flex items-center justify-between flex-wrap gap-4">
+                <mat-chip-listbox aria-label="Category selection" class="hotstar-chips">
+                    @for (cat of categories; track cat) {
+                    <mat-chip-option [selected]="selectedCategory() === cat" (click)="selectCategory(cat)"
+                        class="!rounded-full !text-sm">
+                        {{ cat }}
+                    </mat-chip-option>
+                    }
+                </mat-chip-listbox>
+            </div>
+
+            <!-- Row 1: Latest & Trending (Filtered) -->
+            <section class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-bold tracking-wide">
+                        {{ selectedCategory() === 'All' ? 'Latest & Trending' : selectedCategory() }}
+                    </h2>
+                    <button mat-button class="!text-blue-400 hover:!text-blue-300 text-sm">
+                        View All <mat-icon iconPositionEnd>chevron_right</mat-icon>
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                    @for (item of filteredContent(); track item.id) {
+                    <div
+                        class="group relative rounded-xl overflow-hidden bg-[#16181f] border border-white/5 cursor-pointer transition-all duration-300 hover:scale-105 hover:z-30 hover:shadow-2xl hover:shadow-blue-950/50">
+                        <!-- Poster Image -->
+                        <div class="aspect-[2/3] w-full overflow-hidden relative">
+                            <img [src]="item.poster" [alt]="item.title"
+                                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                            @if (item.badge) {
+                            <span
+                                class="absolute top-2.5 left-2.5 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded bg-blue-600/90 text-white backdrop-blur-sm">
+                                {{ item.badge }}
+                            </span>
+                            }
+
+                            <!-- Hover Overlay Details -->
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-[#0f1014] via-[#0f1014]/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3.5">
+                                <button mat-flat-button
+                                    class="!w-full !bg-white !text-black !text-xs !font-bold !rounded-lg !mb-2 !py-1">
+                                    <mat-icon class="!text-base !w-4 !h-4 mr-1">play_arrow</mat-icon>
+                                    Watch
+                                </button>
+                                <h3 class="font-bold text-sm text-white truncate">{{ item.title }}</h3>
+                                <p class="text-[11px] text-gray-300 mt-0.5">
+                                    {{ item.year }} • {{ item.duration }}
+                                </p>
+                                <p class="text-[11px] text-blue-300 truncate">{{ item.genre }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    }
+                </div>
+            </section>
+
+            <!-- Row 2: Live & Upcoming Sports -->
+            <section class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-bold tracking-wide">Popular in Sports</h2>
+                    <button mat-button class="!text-blue-400 hover:!text-blue-300 text-sm">
+                        View All <mat-icon iconPositionEnd>chevron_right</mat-icon>
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                    @for (sport of sportsContent(); track sport.id) {
+                    <div
+                        class="group relative rounded-xl overflow-hidden bg-[#16181f] border border-white/10 cursor-pointer transition-transform duration-300 hover:scale-[1.02]">
+                        <div class="aspect-video w-full relative overflow-hidden">
+                            <img [src]="sport.poster" [alt]="sport.title"
+                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-[#0f1014] via-transparent to-transparent">
+                            </div>
+                            <span
+                                class="absolute bottom-3 left-3 flex items-center gap-1.5 text-xs font-bold bg-black/70 px-2.5 py-1 rounded-md backdrop-blur-md">
+                                <mat-icon class="!text-sm !w-4 !h-4 text-blue-400">play_circle</mat-icon>
+                                {{ sport.duration }}
+                            </span>
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-semibold text-base text-white group-hover:text-blue-400 transition-colors">
+                                {{ sport.title }}
+                            </h3>
+                            <p class="text-xs text-gray-400 mt-1">{{ sport.genre }} • {{ sport.year }}</p>
+                        </div>
+                    </div>
+                    }
+                </div>
+            </section>
+
+        </div>
+    </main>
+</div>

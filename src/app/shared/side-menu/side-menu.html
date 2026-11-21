@@ -1,0 +1,42 @@
+<!-- Left Fixed Navigation Rail -->
+<aside
+    class="fixed top-0 left-0 z-50 h-screen w-20 hover:w-56 bg-gradient-to-r from-[#0f1014] via-[#0f1014]/95 to-transparent transition-all duration-300 group flex flex-col justify-between py-6 border-r border-white/5">
+    <!-- Brand Logo -->
+    <div class="px-5 flex items-center gap-3">
+        <div
+            class="w-10 h-10 rounded-xl bg-white flex items-center justify-center font-extrabold text-lg shrink-0 shadow-lg shadow-blue-500/30">
+            <img src="/assets/movieWheel.jpg" class="h-10" alt="Hotstar">
+        </div>
+        <span
+            class="font-bold text-lg tracking-wide opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
+            Movie Platform
+        </span>
+    </div>
+
+    <!-- Navigation Links -->
+    <nav class="flex flex-col gap-2 px-3">
+        @for (item of navItems; track item.id) {
+        <button (click)="selectNav(item.id)" [routerLink]="item.id"
+            class="flex items-center gap-4 px-3.5 py-3 rounded-xl transition-all duration-200 text-left cursor-pointer"
+            [ngClass]="
+            activeNav() === item.id
+              ? 'text-white bg-white/15 font-semibold'
+              : 'text-gray-400 hover:text-white hover:bg-white/5'
+          ">
+            <mat-icon class="shrink-0">{{ item.icon }}</mat-icon>
+            <span class="text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
+                {{ item.label }}
+            </span>
+        </button>
+        }
+    </nav>
+
+    <!-- Upgrade Pill -->
+    <div class="px-4">
+        <button mat-flat-button
+            class="!w-full !rounded-xl !bg-amber-500/20 !text-amber-300 border border-amber-400/30 !min-w-0 !px-3">
+            <mat-icon class="!mr-0 group-hover:!mr-2">workspace_premium</mat-icon>
+            <span class="hidden group-hover:inline text-xs font-semibold">Subscribe</span>
+        </button>
+    </div>
+</aside>

@@ -1,0 +1,30 @@
+@if (!isOnline()) {
+  <div
+    class="fixed inset-0 z-[9999] bg-[#0f1014]/95 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center text-white select-none"
+  >
+    <!-- Pulsing Offline Icon -->
+    <div
+      class="w-24 h-24 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center mb-6 animate-pulse"
+    >
+      <mat-icon class="!text-5xl !w-12 !h-12 text-red-500">wifi_off</mat-icon>
+    </div>
+
+    <h1 class="text-2xl md:text-4xl font-extrabold tracking-tight mb-3">
+      No Internet Connection
+    </h1>
+
+    <p class="text-gray-400 max-w-md text-sm md:text-base mb-8 leading-relaxed">
+      You seem to be offline. Please check your Wi-Fi or mobile data connection to continue streaming.
+    </p>
+
+    <button
+      mat-flat-button
+      (click)="retryConnection()"
+      [disabled]="isChecking()"
+      class="!bg-blue-600 hover:!bg-blue-500 !text-white !font-semibold !px-8 !py-6 !rounded-xl !text-base transition-all"
+    >
+      <mat-icon class="mr-2" [class.animate-spin]="isChecking()">refresh</mat-icon>
+      {{ isChecking() ? 'Checking...' : 'Try Again' }}
+    </button>
+  </div>
+}

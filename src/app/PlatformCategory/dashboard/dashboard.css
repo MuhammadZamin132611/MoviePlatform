@@ -1,0 +1,20 @@
+/* Dark mode styling for Angular Material Chips */
+::ng-deep .hotstar-chips .mdc-evolution-chip__cell--primary {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+::ng-deep .hotstar-chips .mdc-evolution-chip__text-label {
+    color: #e5e7eb !important;
+    font-weight: 500;
+}
+
+::ng-deep .hotstar-chips .mdc-evolution-chip--selected .mdc-evolution-chip__cell--primary {
+    background-color: #2563eb !important;
+    border-color: #3b82f6 !important;
+}
+
+::ng-deep .hotstar-chips .mdc-evolution-chip--selected .mdc-evolution-chip__text-label {
+    color: #ffffff !important;
+    font-weight: 600;
+}
